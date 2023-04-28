@@ -11,6 +11,7 @@ import (
 type AddrInfo struct {
 	ID    ID
 	Addrs []ma.Multiaddr
+	Features FeatureList
 }
 
 var _ fmt.Stringer = AddrInfo{}

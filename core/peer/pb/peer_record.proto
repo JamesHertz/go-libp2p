@@ -26,4 +26,5 @@ message PeerRecord {
 
     // addresses is a list of public listen addresses for the peer.
     repeated AddressInfo addresses = 3;
+    // repeated string featuresList = 4;
 }
