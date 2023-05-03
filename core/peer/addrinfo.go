@@ -11,7 +11,7 @@ import (
 type AddrInfo struct {
 	ID    ID
 	Addrs []ma.Multiaddr
-	Features FeatureList
+	// Features FeatureList
 }
 
 var _ fmt.Stringer = AddrInfo{}
@@ -105,6 +105,7 @@ func (pi *AddrInfo) Loggable() map[string]interface{} {
 	return map[string]interface{}{
 		"peerID": pi.ID.Pretty(),
 		"addrs":  pi.Addrs,
+		// "features":  pi.Features
 	}
 }
 

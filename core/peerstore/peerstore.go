@@ -84,6 +84,7 @@ type PeerMetadata interface {
 	RemovePeer(peer.ID)
 }
 
+// TODO: change this :)
 // AddrBook holds the multiaddrs of peers.
 type AddrBook interface {
 	// AddAddr calls AddAddrs(p, []ma.Multiaddr{addr}, ttl)

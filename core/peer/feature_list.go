@@ -5,7 +5,7 @@ type FeatureList []string
 func (list FeatureList) FeaturesScore(other FeatureList) int {
 	var smallest, greater FeatureList
 	diff := other.Size() - list.Size()
-	if list.Size() <= other.Size(){
+	if diff >= 0 {
 		smallest = list
 		greater  = other
 	} else {
