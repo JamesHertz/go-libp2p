@@ -15,32 +15,32 @@ func TestScores(t *testing.T){
 		{
 			f1: FeatureList{"a", "b", "c"},
 			f2: FeatureList{"a", "b", "c"},
-			score: 7,
+			score: 0b111,
 		},
 		{
 			f1: FeatureList{"a", "b", "c"},
 			f2: FeatureList{"a", "d", "c"},
-			score: 5,
+			score: 0b101,
 		},
 		{
 			f1: FeatureList{"a", "b", "c"},
 			f2: FeatureList{"c", "a", "b"},
-			score: 0,
+			score: 0b000,
 		},
 		{
 			f1: FeatureList{"a", "b", "c"},
 			f2: FeatureList{"c"},
-			score: 1,
+			score: 0b001,
 		},
 		{
 			f1: FeatureList{"a", "b", "c"},
 			f2: FeatureList{"b", "c"},
-			score: 3,
+			score: 0b011,
 		},
 		{
 			f1: FeatureList{"a", "b", "c"},
 			f2: FeatureList{"c", "b"},
-			score: 0,
+			score: 0b000,
 		},
 	};
 
