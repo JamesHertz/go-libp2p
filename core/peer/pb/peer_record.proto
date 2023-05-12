@@ -10,7 +10,7 @@ package peer.pb;
 // SignedEnvelopes before sharing with other peers.
 // See https://github.com/libp2p/go-libp2p/core/record/pb/envelope.proto for
 // the SignedEnvelope definition.
-message PeerRecord {
+message PeerRecord { // TODO: look at this :)
 
     // AddressInfo is a wrapper around a binary multiaddr. It is defined as a
     // separate message to allow us to add per-address metadata in the future.
