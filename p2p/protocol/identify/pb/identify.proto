@@ -1,3 +1,5 @@
+// To generated compile this do run the following from this directory the following:
+// `cd .. ; protoc --go_opt=Mpb/identify.proto=./pb --go_out=. pb/identify.proto`
 syntax = "proto2";
 
 package identify.pb;
@@ -26,6 +28,9 @@ message Identify {
 
   // protocols are the services this node is running
   repeated string protocols = 3;
+
+  // features list
+  repeated string features = 9;
 
   // signedPeerRecord contains a serialized SignedEnvelope containing a PeerRecord,
   // signed by the sending node. It contains the same addresses as the listenAddrs field, but

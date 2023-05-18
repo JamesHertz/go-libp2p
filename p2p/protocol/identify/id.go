@@ -60,6 +60,7 @@ type identifySnapshot struct {
 	protocols []protocol.ID
 	addrs     []ma.Multiaddr
 	record    *record.Envelope
+	features  peer.FeatureList
 }
 
 type IDService interface {
@@ -528,6 +529,7 @@ func (ids *idService) updateSnapshot() {
 	snapshot := identifySnapshot{
 		addrs:     ids.Host.Addrs(),
 		protocols: ids.Host.Mux().Protocols(),
+		features: ids.Host.GetFeatures(),
 	}
 	if !ids.disableSignedPeerRecord {
 		if cab, ok := peerstore.GetCertifiedAddrBook(ids.Host.Peerstore()); ok {
@@ -571,6 +573,9 @@ func (ids *idService) createBaseIdentifyResponse(conn network.Conn, snapshot *id
 	// observed address so other side is informed of their
 	// "public" address, at least in relation to us.
 	mes.ObservedAddr = remoteAddr.Bytes()
+
+	// peer features :)
+	mes.Features = snapshot.features.StringArray()
 
 	// populate unsigned addresses.
 	// peers that do not yet support signed addresses will need this.
@@ -740,6 +745,11 @@ func (ids *idService) consumeMessage(mes *pb.Identify, c network.Conn, isPush bo
 
 	ids.Host.Peerstore().Put(p, "ProtocolVersion", pv)
 	ids.Host.Peerstore().Put(p, "AgentVersion", av)
+
+
+	// stores the peer features :)
+	pfeatures := mes.Features
+	ids.Host.Peerstore().SetFeatures(p, peer.StringToFeatureList(pfeatures)...)
 
 	// get the key from the other side. we may not have it (no-auth transport)
 	ids.consumeReceivedPubKey(c, mes.PublicKey)

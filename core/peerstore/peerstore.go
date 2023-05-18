@@ -255,7 +255,7 @@ type ProtoBook interface {
 // used to keep track of the features of each peer
 type FeatureBook interface {
 	// set the feature list
-    SetFeatures(peer.ID, ...peer.Feature)
+    SetFeatures(peer.ID, ...peer.Feature) // TODO: should I change the DEFINITION OF THIS?
     // RemoveFeature(peer.ID, ...peer.Feature) // -> TODO think about this later ... 
 	// Get peer features list or nil
     GetFeatures(peer.ID) peer.FeatureList

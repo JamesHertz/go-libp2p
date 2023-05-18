@@ -1,9 +1,15 @@
 package peer 
 
+import "unsafe"
+
 type Feature string
 type FeatureList []Feature
 
 var emptyFeatureList FeatureList = nil
+
+func StringToFeatureList(fts []string) FeatureList {
+	return *(*FeatureList)(unsafe.Pointer(&fts)) // https://stackoverflow.com/questions/29031353/conversion-of-a-slice-of-string-into-a-slice-of-custom-type
+}
 
 func (list FeatureList) FeaturesScore(other FeatureList) int {
 	if &list == &emptyFeatureList || &other == &emptyFeatureList {
@@ -45,4 +51,8 @@ func (list FeatureList) Size() int {
 		return 0
 	}
 	return len(list)
+}
+
+func (list FeatureList) StringArray() []string{
+	return *(*[]string)(unsafe.Pointer(&list)) // https://stackoverflow.com/questions/29031353/conversion-of-a-slice-of-string-into-a-slice-of-custom-type
 }
