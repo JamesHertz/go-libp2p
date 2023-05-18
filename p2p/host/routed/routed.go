@@ -196,6 +196,14 @@ func (rh *RoutedHost) RemoveStreamHandler(pid protocol.ID) {
 	rh.host.RemoveStreamHandler(pid)
 }
 
+func (rh * RoutedHost) GetFeatures() peer.FeatureList {
+	return rh.host.GetFeatures()
+}
+
+func (rh * RoutedHost) SetFeatures(features ...peer.Feature)  {
+	rh.host.SetFeatures(features...)
+}
+
 func (rh *RoutedHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (network.Stream, error) {
 	// Ensure we have a connection, with peer addresses resolved by the routing system (#207)
 	// It is not sufficient to let the underlying host connect, it will most likely not have
