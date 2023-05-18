@@ -88,6 +88,7 @@ type BasicHost struct {
 	emitters struct {
 		evtLocalProtocolsUpdated event.Emitter
 		evtLocalAddrsUpdated     event.Emitter
+		// evtLocalFeaturesUpdated  event.Emitter // TO I NEED THIS?
 	}
 
 	addrChangeChan chan struct{}
@@ -308,6 +309,14 @@ func NewHost(n network.Network, opts *HostOpts) (*BasicHost, error) {
 	})
 
 	return h, nil
+}
+
+func (h * BasicHost) SetFeatures(features ...peer.Feature) {
+	h.Peerstore().SetFeatures(h.ID(), features...)
+}
+
+func (h * BasicHost) GetFeatures() peer.FeatureList{
+	return h.Peerstore().GetFeatures(h.ID())
 }
 
 func (h *BasicHost) updateLocalIpAddr() {

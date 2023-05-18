@@ -232,3 +232,13 @@ func (bh *BlankHost) ConnManager() connmgr.ConnManager {
 func (bh *BlankHost) EventBus() event.Bus {
 	return bh.eventbus
 }
+
+
+// ...
+func (bh *BlankHost) GetFeatures() peer.FeatureList {
+	return bh.n.Peerstore().GetFeatures(bh.ID())
+}
+
+func (bh *BlankHost) SetFeatures(features ...peer.Feature){
+	bh.n.Peerstore().SetFeatures(bh.ID(), features...)
+}

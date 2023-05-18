@@ -722,6 +722,20 @@ func TestNegotiationCancel(t *testing.T) {
 	}
 }
 
+func TestFeatures(t *testing.T){ // small test
+	h1, err := NewHost(swarmt.GenSwarm(t), nil)
+	require.Nil(t, err)
+
+	features := peer.FeatureList{
+		"f1", "f2", "f3", "f3",
+	}
+	h1.SetFeatures(features...)
+	require.True(t, reflect.DeepEqual(
+		features, h1.GetFeatures(),
+	));
+	// TODO: add more things later :)
+}
+
 func waitForAddrChangeEvent(ctx context.Context, sub event.Subscription, t *testing.T) event.EvtLocalAddressesUpdated {
 	t.Helper()
 	for {
@@ -792,3 +806,4 @@ func peerRecordFromEnvelope(t *testing.T, ev *record.Envelope) *peer.PeerRecord 
 	}
 	return peerRec
 }
+
