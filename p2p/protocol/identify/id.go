@@ -423,8 +423,8 @@ func (ids *idService) sendIdentifyResp(s network.Stream, isPush bool) error {
 
 	log.Debugw("sending snapshot", "seq", snapshot.seq, "protocols", snapshot.protocols, "addrs", snapshot.addrs)
 
-	mes := ids.createBaseIdentifyResponse(s.Conn(), &snapshot)
-	mes.SignedPeerRecord = ids.getSignedRecord(&snapshot)
+	mes := ids.createBaseIdentifyResponse(s.Conn(), &snapshot) // TODO: over here
+	mes.SignedPeerRecord = ids.getSignedRecord(&snapshot) // TODO: as well
 
 	log.Debugf("%s sending message to %s %s", ID, s.Conn().RemotePeer(), s.Conn().RemoteMultiaddr())
 	if err := ids.writeChunkedIdentifyMsg(s, mes); err != nil {
@@ -481,7 +481,7 @@ func (ids *idService) handleIdentifyResponse(s network.Stream, isPush bool) erro
 
 	log.Debugf("%s received message from %s %s", s.Protocol(), c.RemotePeer(), c.RemoteMultiaddr())
 
-	ids.consumeMessage(mes, c, isPush)
+	ids.consumeMessage(mes, c, isPush) // ??
 
 	if ids.metricsTracer != nil {
 		ids.metricsTracer.IdentifyReceived(isPush, len(mes.Protocols), len(mes.ListenAddrs))

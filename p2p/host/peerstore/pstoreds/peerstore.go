@@ -65,6 +65,7 @@ type pstoreds struct {
 	*dsAddrBook
 	*dsProtoBook
 	*dsPeerMetadata
+	*dsFeatureBook
 }
 
 var _ peerstore.Peerstore = &pstoreds{}
@@ -99,6 +100,7 @@ func NewPeerstore(ctx context.Context, store ds.Batching, opts Options) (*pstore
 		dsAddrBook:     addrBook,
 		dsPeerMetadata: peerMetadata,
 		dsProtoBook:    protoBook,
+		dsFeatureBook:  NewFeatureBook(),
 	}, nil
 }
 

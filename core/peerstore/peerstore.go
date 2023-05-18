@@ -56,6 +56,7 @@ type Peerstore interface {
 	PeerMetadata
 	Metrics
 	ProtoBook
+	FeatureBook
 
 	// PeerInfo returns a peer.PeerInfo struct for given peer.ID.
 	// This is a small slice of the information Peerstore has on
@@ -248,4 +249,18 @@ type ProtoBook interface {
 
 	// RemovePeer removes all protocols associated with a peer.
 	RemovePeer(peer.ID)
+}
+
+
+// used to keep track of the features of each peer
+type FeatureBook interface {
+	// set the feature list
+    SetFeatures(peer.ID, ...peer.Feature)
+    // RemoveFeature(peer.ID, ...peer.Feature) // -> TODO think about this later ... 
+	// Get peer features list or nil
+    GetFeatures(peer.ID) peer.FeatureList
+	// checks if a peer has features
+	HasFeature(peer.ID, peer.Feature) bool
+	// removes the peer from the book 
+    RemovePeer(peer.ID)
 }

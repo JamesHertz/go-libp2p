@@ -199,6 +199,20 @@ func (mr *MockPeerstoreMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPeerstore)(nil).Get), arg0, arg1)
 }
 
+// GetFeatures mocks base method.
+func (m *MockPeerstore) GetFeatures(arg0 peer.ID) peer.FeatureList {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFeatures", arg0)
+	ret0, _ := ret[0].(peer.FeatureList)
+	return ret0
+}
+
+// GetFeatures indicates an expected call of GetFeatures.
+func (mr *MockPeerstoreMockRecorder) GetFeatures(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeatures", reflect.TypeOf((*MockPeerstore)(nil).GetFeatures), arg0)
+}
+
 // GetProtocols mocks base method.
 func (m *MockPeerstore) GetProtocols(arg0 peer.ID) ([]protocol.ID, error) {
 	m.ctrl.T.Helper()
@@ -212,6 +226,20 @@ func (m *MockPeerstore) GetProtocols(arg0 peer.ID) ([]protocol.ID, error) {
 func (mr *MockPeerstoreMockRecorder) GetProtocols(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProtocols", reflect.TypeOf((*MockPeerstore)(nil).GetProtocols), arg0)
+}
+
+// HasFeature mocks base method.
+func (m *MockPeerstore) HasFeature(arg0 peer.ID, arg1 peer.Feature) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HasFeature", arg0, arg1)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HasFeature indicates an expected call of HasFeature.
+func (mr *MockPeerstoreMockRecorder) HasFeature(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasFeature", reflect.TypeOf((*MockPeerstore)(nil).HasFeature), arg0, arg1)
 }
 
 // LatencyEWMA mocks base method.
@@ -391,6 +419,23 @@ func (m *MockPeerstore) SetAddrs(arg0 peer.ID, arg1 []multiaddr.Multiaddr, arg2 
 func (mr *MockPeerstoreMockRecorder) SetAddrs(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetAddrs", reflect.TypeOf((*MockPeerstore)(nil).SetAddrs), arg0, arg1, arg2)
+}
+
+// SetFeatures mocks base method.
+func (m *MockPeerstore) SetFeatures(arg0 peer.ID, arg1 ...peer.Feature) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "SetFeatures", varargs...)
+}
+
+// SetFeatures indicates an expected call of SetFeatures.
+func (mr *MockPeerstoreMockRecorder) SetFeatures(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetFeatures", reflect.TypeOf((*MockPeerstore)(nil).SetFeatures), varargs...)
 }
 
 // SetProtocols mocks base method.

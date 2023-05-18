@@ -16,6 +16,7 @@ type pstoremem struct {
 	*memoryAddrBook
 	*memoryProtoBook
 	*memoryPeerMetadata
+	*memoryFeatureBook
 }
 
 var _ peerstore.Peerstore = &pstoremem{}
@@ -54,6 +55,7 @@ func NewPeerstore(opts ...Option) (ps *pstoremem, err error) {
 		memoryAddrBook:     ab,
 		memoryProtoBook:    pb,
 		memoryPeerMetadata: NewPeerMetadata(),
+		memoryFeatureBook:  NewFeatureBook(),
 	}, nil
 }
 
@@ -110,5 +112,6 @@ func (ps *pstoremem) RemovePeer(p peer.ID) {
 	ps.memoryKeyBook.RemovePeer(p)
 	ps.memoryProtoBook.RemovePeer(p)
 	ps.memoryPeerMetadata.RemovePeer(p)
+	ps.memoryFeatureBook.RemovePeer(p) // TODO: should I?
 	ps.Metrics.RemovePeer(p)
 }

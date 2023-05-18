@@ -1,4 +1,4 @@
-package peer
+package peer 
 
 type Feature string
 type FeatureList []Feature
@@ -10,27 +10,35 @@ func (list FeatureList) FeaturesScore(other FeatureList) int {
 		return 0
 	}
 
-	var smallest, greater FeatureList
-	diff := other.Size() - list.Size()
-	if diff >= 0 {
-		smallest = list
-		greater = other
-	} else {
+	smallest := list
+	greater  := other
+	diff     := other.Size() - list.Size()
+	if diff < 0 {
 		smallest = other
-		greater = list
-		diff = -diff
+		greater  = list
+		diff     = -diff
 	}
 
 	score := 0
 	for i := 0; i < smallest.Size(); i++ {
-		bit := 0
+		score <<= 1
 		if smallest[i] == greater[i+diff] {
-			bit = 1
+			score |= 1
 		}
-		score = score<<1 | bit
 	}
 	return score
 }
+
+
+func (list FeatureList) HasFeature(feature Feature) bool{
+	for _, ft := range list {
+		if ft == feature{
+			return true
+		}
+	}
+	return false
+}
+
 
 func (list FeatureList) Size() int {
 	if &list == &emptyFeatureList {
