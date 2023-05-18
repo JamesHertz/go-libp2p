@@ -20,7 +20,9 @@ func NewFeatureBook() *memoryFeatureBook{
 
 func (fb * memoryFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
 	fb.lock.Lock()
-	fb.store[pid] = features
+	aux := make(peer.FeatureList, len(features))
+	copy(aux, features)
+	fb.store[pid] = aux
 	fb.lock.Unlock()
 }
 
@@ -34,11 +36,7 @@ func (fb * memoryFeatureBook) GetFeatures(pid peer.ID) peer.FeatureList {
 	}
 
 	res := make(peer.FeatureList, features.Size())
-
-	for i, ft := range features {
-		res[i] = ft
-	}
-
+	copy(res, features)
 	return res
 }
 

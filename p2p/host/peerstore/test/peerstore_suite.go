@@ -26,6 +26,7 @@ var peerstoreSuite = map[string]func(pstore.Peerstore) func(*testing.T){
 	"BasicPeerstore":           testBasicPeerstore,
 	"Metadata":                 testMetadata,
 	"CertifiedAddrBook":        testCertifiedAddrBook,
+	"FeatureBook":              testFeatureBook,
 }
 
 type PeerstoreFactory func() (pstore.Peerstore, func())
@@ -404,4 +405,56 @@ func TestPeerstoreProtoStoreLimits(t *testing.T, ps pstore.Peerstore, limit int)
 		require.NoError(t, ps.AddProtocols(p, p2...))
 		require.EqualError(t, ps.AddProtocols(p, "proto"), "too many protocols")
 	})
+}
+
+
+func testFeatureBook(ps pstore.Peerstore) func(*testing.T){
+	return func(t *testing.T){
+		pid := peer.ID("peer1")
+		fts := peer.FeatureList{
+			"feature-1",
+			"feature-2",
+			"feature-3",
+		}
+		t.Run("Get and Set", func(t *testing.T){
+			require.Equal(t, peer.FeatureList(nil), ps.GetFeatures(pid))
+			ps.SetFeatures(pid, fts...)
+			require.True(t, reflect.DeepEqual(
+				fts, ps.GetFeatures(pid),
+			))
+		})
+
+		t.Run("Get and Set safety", func(t * testing.T){
+			fts[0] = "whatever"
+			require.False(t, reflect.DeepEqual(
+				ps.GetFeatures(pid), fts,
+			))
+			aux := ps.GetFeatures(pid)
+			require.NotNil(t, aux)
+			require.True(t, reflect.DeepEqual(
+				ps.GetFeatures(pid), aux,
+			))
+			aux[0] = "I am a supper mem"
+			require.False(t, reflect.DeepEqual(
+				ps.GetFeatures(pid), aux,
+			))
+		})
+
+		t.Run("Resetting", func(t *testing.T){
+			aux := ps.GetFeatures(pid)
+			require.NotEqual(t, peer.FeatureList(nil), aux);
+			newFeatures := peer.FeatureList{
+				"new-feature-1",
+				"new-feature-2",
+				"new-feature-3",
+			}
+			ps.SetFeatures(pid, newFeatures...)
+			require.False(t, reflect.DeepEqual(
+				aux, ps.GetFeatures(pid),
+			))
+			require.True(t, reflect.DeepEqual(
+				newFeatures, ps.GetFeatures(pid),
+			))
+		});
+	};
 }
