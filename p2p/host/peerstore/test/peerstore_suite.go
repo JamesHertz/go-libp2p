@@ -408,9 +408,10 @@ func TestPeerstoreProtoStoreLimits(t *testing.T, ps pstore.Peerstore, limit int)
 }
 
 
+// ...
 func testFeatureBook(ps pstore.Peerstore) func(*testing.T){
 	return func(t *testing.T){
-		pid := peer.ID("peer1")
+		pid := peer.ID("myPeerID")
 		fts := peer.FeatureList{
 			"feature-1",
 			"feature-2",
