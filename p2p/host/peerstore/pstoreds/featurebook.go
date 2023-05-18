@@ -17,7 +17,7 @@ func (fb * dsFeatureBook) GetFeatures(pid peer.ID) peer.FeatureList {
 	panic("called GetFeatures of dsFeatureBook (not implemented)");
 }
 
-func (fb * dsFeatureBook) SetFeatures(pid peer.ID, features peer.FeatureList) {
+func (fb * dsFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
 	// features, err := fb.meta.Get(pid, featureKey)
 	panic("called SetFeatures of dsFeatureBook (not implemented)");
 }
