@@ -32,6 +32,7 @@ type BlankHost struct {
 	eventbus event.Bus
 	emitters struct {
 		evtLocalProtocolsUpdated event.Emitter
+		evtLocalFeaturesUpdated event.Emitter
 	}
 }
 
@@ -78,6 +79,11 @@ func NewBlankHost(n network.Network, options ...Option) *BlankHost {
 	if bh.emitters.evtLocalProtocolsUpdated, err = bh.eventbus.Emitter(&event.EvtLocalProtocolsUpdated{}); err != nil {
 		return nil
 	}
+
+	if bh.emitters.evtLocalFeaturesUpdated, err = bh.eventbus.Emitter(&event.EvtLocalFeaturesUpdated{}); err != nil {
+		return nil
+	}
+
 	evtPeerConnectednessChanged, err := bh.eventbus.Emitter(&event.EvtPeerConnectednessChanged{})
 	if err != nil {
 		return nil
@@ -240,5 +246,12 @@ func (bh *BlankHost) GetFeatures() peer.FeatureList {
 }
 
 func (bh *BlankHost) SetFeatures(features ...peer.Feature){
-	bh.n.Peerstore().SetFeatures(bh.ID(), features...)
+	pstore := bh.n.Peerstore()
+	pstore.SetFeatures(bh.ID(), features...)
+
+	bh.emitters.evtLocalFeaturesUpdated.Emit(
+		event.EvtLocalFeaturesUpdated{
+			NewFeatureList: pstore.GetFeatures(bh.ID()), // TODO: think about this
+		},
+	)
 }

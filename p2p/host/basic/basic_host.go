@@ -88,7 +88,7 @@ type BasicHost struct {
 	emitters struct {
 		evtLocalProtocolsUpdated event.Emitter
 		evtLocalAddrsUpdated     event.Emitter
-		// evtLocalFeaturesUpdated  event.Emitter // TO I NEED THIS?
+		evtLocalFeaturesUpdated  event.Emitter
 	}
 
 	addrChangeChan chan struct{}
@@ -202,6 +202,9 @@ func NewHost(n network.Network, opts *HostOpts) (*BasicHost, error) {
 	if h.emitters.evtLocalAddrsUpdated, err = h.eventbus.Emitter(&event.EvtLocalAddressesUpdated{}, eventbus.Stateful); err != nil {
 		return nil, err
 	}
+	if h.emitters.evtLocalFeaturesUpdated, err = h.eventbus.Emitter(&event.EvtLocalFeaturesUpdated{}, eventbus.Stateful); err != nil {
+		return nil, err
+	}
 	evtPeerConnectednessChanged, err := h.eventbus.Emitter(&event.EvtPeerConnectednessChanged{})
 	if err != nil {
 		return nil, err
@@ -312,7 +315,13 @@ func NewHost(n network.Network, opts *HostOpts) (*BasicHost, error) {
 }
 
 func (h * BasicHost) SetFeatures(features ...peer.Feature) {
-	h.Peerstore().SetFeatures(h.ID(), features...)
+	pstore := h.Peerstore()
+	pstore.SetFeatures(h.ID(), features...)
+	h.emitters.evtLocalFeaturesUpdated.Emit(
+		event.EvtLocalFeaturesUpdated{
+			NewFeatureList: pstore.GetFeatures(h.ID()), // TODO: think about this
+		},
+	)
 }
 
 func (h * BasicHost) GetFeatures() peer.FeatureList{

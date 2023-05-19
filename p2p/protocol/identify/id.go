@@ -142,6 +142,7 @@ type idService struct {
 		evtPeerProtocolsUpdated        event.Emitter
 		evtPeerIdentificationCompleted event.Emitter
 		evtPeerIdentificationFailed    event.Emitter
+		// evtPeerFeaturesUpdated         event.Emitter // QUESTION: should I have it
 	}
 
 	currentSnapshot struct {
@@ -199,6 +200,11 @@ func NewIDService(h host.Host, opts ...Option) (*idService, error) {
 	if err != nil {
 		log.Warnf("identify service not emitting identification failed events; err: %s", err)
 	}
+
+	// s.emitters.evtPeerFeaturesUpdated, err = h.EventBus().Emitter(&event.EvtPeerFeaturesUpdated{})
+	// if err != nil {
+	// 	log.Warnf("identify service not emitting features update events; err: %s", err)
+	// }
 	return s, nil
 }
 
@@ -217,7 +223,7 @@ func (ids *idService) loop(ctx context.Context) {
 	defer ids.refCount.Done()
 
 	sub, err := ids.Host.EventBus().Subscribe(
-		[]any{&event.EvtLocalProtocolsUpdated{}, &event.EvtLocalAddressesUpdated{}},
+		[]any{&event.EvtLocalProtocolsUpdated{}, &event.EvtLocalAddressesUpdated{}, &event.EvtLocalFeaturesUpdated{}},
 		eventbus.BufSize(256),
 		eventbus.Name("identify (loop)"),
 	)
@@ -248,7 +254,8 @@ func (ids *idService) loop(ctx context.Context) {
 
 	for {
 		select {
-		case e, ok := <-sub.Out():
+		//notes: ok -> is false if the channel was closed else true
+		case e, ok := <-sub.Out(): 
 			if !ok {
 				return
 			}
@@ -542,7 +549,7 @@ func (ids *idService) updateSnapshot() {
 	ids.currentSnapshot.snapshot = snapshot
 	ids.currentSnapshot.Unlock()
 
-	log.Debugw("updating snapshot", "seq", snapshot.seq, "addrs", snapshot.addrs)
+	log.Debugw("updating snapshot", "seq", snapshot.seq, "addrs", snapshot.addrs, "features", snapshot.features)
 }
 
 func (ids *idService) writeChunkedIdentifyMsg(s network.Stream, mes *pb.Identify) error {
@@ -666,6 +673,7 @@ func (ids *idService) consumeMessage(mes *pb.Identify, c network.Conn, isPush bo
 	supported, _ := ids.Host.Peerstore().GetProtocols(p)
 	mesProtocols := protocol.ConvertFromStrings(mes.Protocols)
 	added, removed := diff(supported, mesProtocols)
+	pfeatures := peer.StringToFeatureList( mes.GetFeatures() )
 	ids.Host.Peerstore().SetProtocols(p, mesProtocols...)
 	if isPush {
 		ids.emitters.evtPeerProtocolsUpdated.Emit(event.EvtPeerProtocolsUpdated{
@@ -673,6 +681,11 @@ func (ids *idService) consumeMessage(mes *pb.Identify, c network.Conn, isPush bo
 			Added:   added,
 			Removed: removed,
 		})
+
+		// ids.emitters.evtPeerFeaturesUpdated.Emit(event.EvtPeerFeaturesUpdated{
+		// 	Peer: p,
+		// 	NewFeatureList: pfeatures,
+		// })
 	}
 
 	// mes.ObservedAddr
@@ -737,7 +750,7 @@ func (ids *idService) consumeMessage(mes *pb.Identify, c network.Conn, isPush bo
 	ids.Host.Peerstore().UpdateAddrs(p, peerstore.TempAddrTTL, 0)
 	ids.addrMu.Unlock()
 
-	log.Debugf("%s received listen addrs for %s: %s", c.LocalPeer(), c.RemotePeer(), lmaddrs)
+	log.Debugf("%s received from %s: addrs = %s ; features = %s", c.LocalPeer(), c.RemotePeer(), lmaddrs, pfeatures)
 
 	// get protocol versions
 	pv := mes.GetProtocolVersion()
@@ -748,8 +761,7 @@ func (ids *idService) consumeMessage(mes *pb.Identify, c network.Conn, isPush bo
 
 
 	// stores the peer features :)
-	pfeatures := mes.Features
-	ids.Host.Peerstore().SetFeatures(p, peer.StringToFeatureList(pfeatures)...)
+	ids.Host.Peerstore().SetFeatures(p, pfeatures...)
 
 	// get the key from the other side. we may not have it (no-auth transport)
 	ids.consumeReceivedPubKey(c, mes.PublicKey)

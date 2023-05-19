@@ -24,3 +24,14 @@ type EvtLocalProtocolsUpdated struct {
 	// Removed enumerates the protocols that were removed locally.
 	Removed []protocol.ID
 }
+
+// WARNING: this is temporarily (I think)
+type EvtLocalFeaturesUpdated struct {
+	NewFeatureList peer.FeatureList
+} 
+
+// TODO: think about this (should I have it)?
+// type EvtPeerFeaturesUpdated struct {
+// 	Peer peer.ID
+// 	NewFeatureList peer.FeatureList
+// }
