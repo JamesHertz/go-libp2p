@@ -2,32 +2,33 @@ package peer
 
 import (
 	"testing"
+
 	"github.com/stretchr/testify/require"
 )
 
 func TestScores(t *testing.T) {
-	fs := ToFeatureSet("a", "b", "c", "d")
+	fs := NewFeatureSet("a", "b", "c", "d")
 
 	require.Equal(t, fs.FeatureScore(Features(nil)), 0)
 
 	testCases := []struct {
-		fts Features
+		fts   Features
 		score int
-	} {
+	}{
 		{
-			fts: Features{"a", "b"},
+			fts:   Features{"a", "b"},
 			score: 2 * FT_POINT,
 		},
 		{
-			fts: Features{"a", "b", "d"},
+			fts:   Features{"a", "b", "d"},
 			score: 3 * FT_POINT,
 		},
 		{
-			fts: Features{"z", "h", "i"},
+			fts:   Features{"z", "h", "i"},
 			score: 0,
 		},
 		{
-			fts: fs.Features(),
+			fts:   fs.Features(),
 			score: FT_POINT * fs.Size(),
 		},
 	}

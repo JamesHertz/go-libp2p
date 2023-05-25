@@ -33,12 +33,13 @@ func ToFeatures(fts []string) Features {
 
 // features set for future plans :)
 const FT_POINT = 1
+
 type FeatureSet struct {
 	fts map[Feature]struct{}
 }
 
-func ToFeatureSet(fts ...Feature) FeatureSet{
-	fs := FeatureSet {
+func NewFeatureSet(fts ...Feature) FeatureSet {
+	fs := FeatureSet{
 		fts: make(map[Feature]struct{}, len(fts)),
 	}
 	for _, ft := range fts {
@@ -47,7 +48,7 @@ func ToFeatureSet(fts ...Feature) FeatureSet{
 	return fs
 }
 
-func (fs FeatureSet) HasFeature(ft Feature) bool{
+func (fs FeatureSet) HasFeature(ft Feature) bool {
 	_, ok := fs.fts[ft]
 	return ok
 }
@@ -66,7 +67,7 @@ func (fs FeatureSet) FeatureScore(fts Features) int {
 	return score
 }
 
-func (fs FeatureSet) Features() Features{
+func (fs FeatureSet) Features() Features {
 	res := make(Features, len(fs.fts))
 	for ft := range fs.fts {
 		res = append(res, ft)
@@ -74,6 +75,6 @@ func (fs FeatureSet) Features() Features{
 	return res
 }
 
-func (fs FeatureSet) Size() int{
+func (fs FeatureSet) Size() int {
 	return len(fs.fts)
 }
