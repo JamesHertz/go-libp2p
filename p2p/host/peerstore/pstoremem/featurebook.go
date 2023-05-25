@@ -7,26 +7,26 @@ import (
 )
 
 type memoryFeatureBook struct {
-	store map[peer.ID]peer.FeatureList
-	lock sync.RWMutex
+	store map[peer.ID]peer.Features
+	lock  sync.RWMutex
 }
 
-func NewFeatureBook() *memoryFeatureBook{
+func NewFeatureBook() *memoryFeatureBook {
 	return &memoryFeatureBook{
-		store: make(map[peer.ID]peer.FeatureList),
-		lock: sync.RWMutex{},
-	} 
+		store: make(map[peer.ID]peer.Features),
+		lock:  sync.RWMutex{},
+	}
 }
 
-func (fb * memoryFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
+func (fb *memoryFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
 	fb.lock.Lock()
-	aux := make(peer.FeatureList, len(features))
+	aux := make(peer.Features, len(features))
 	copy(aux, features)
 	fb.store[pid] = aux
 	fb.lock.Unlock()
 }
 
-func (fb * memoryFeatureBook) GetFeatures(pid peer.ID) peer.FeatureList {
+func (fb *memoryFeatureBook) Features(pid peer.ID) peer.Features {
 	fb.lock.RLock()
 	defer fb.lock.RUnlock()
 	features, ok := fb.store[pid]
@@ -35,12 +35,12 @@ func (fb * memoryFeatureBook) GetFeatures(pid peer.ID) peer.FeatureList {
 		return nil
 	}
 
-	res := make(peer.FeatureList, features.Size())
+	res := make(peer.Features, features.Size())
 	copy(res, features)
 	return res
 }
 
-func (fb * memoryFeatureBook) HasFeature(pid peer.ID, feature peer.Feature) bool {
+func (fb *memoryFeatureBook) HasFeature(pid peer.ID, feature peer.Feature) bool {
 	fb.lock.RLock()
 	defer fb.lock.RUnlock()
 	features, ok := fb.store[pid]
@@ -57,7 +57,7 @@ func (fb * memoryFeatureBook) HasFeature(pid peer.ID, feature peer.Feature) bool
 	return false
 }
 
-func (fb * memoryFeatureBook) RemovePeer(pid peer.ID) {
+func (fb *memoryFeatureBook) RemovePeer(pid peer.ID) {
 	fb.lock.Lock()
 	delete(fb.store, pid)
 	fb.lock.Unlock()
@@ -71,4 +71,3 @@ func (fb * memoryFeatureBook) RemovePeer(pid peer.ID) {
 // 		//newfl := make(peer.FeatureList, 0, pfeatures.Size())
 // 	}
 // }
-

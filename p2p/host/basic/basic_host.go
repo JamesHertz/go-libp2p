@@ -314,18 +314,18 @@ func NewHost(n network.Network, opts *HostOpts) (*BasicHost, error) {
 	return h, nil
 }
 
-func (h * BasicHost) SetFeatures(features ...peer.Feature) {
+func (h *BasicHost) SetFeatures(features ...peer.Feature) {
 	pstore := h.Peerstore()
 	pstore.SetFeatures(h.ID(), features...)
 	h.emitters.evtLocalFeaturesUpdated.Emit(
 		event.EvtLocalFeaturesUpdated{
-			NewFeatureList: pstore.GetFeatures(h.ID()), // TODO: think about this
+			NewFeatureList: pstore.Features(h.ID()), // TODO: think about this
 		},
 	)
 }
 
-func (h * BasicHost) GetFeatures() peer.FeatureList{
-	return h.Peerstore().GetFeatures(h.ID())
+func (h *BasicHost) GetFeatures() peer.Features {
+	return h.Peerstore().Features(h.ID())
 }
 
 func (h *BasicHost) updateLocalIpAddr() {

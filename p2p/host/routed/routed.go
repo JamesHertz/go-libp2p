@@ -196,11 +196,11 @@ func (rh *RoutedHost) RemoveStreamHandler(pid protocol.ID) {
 	rh.host.RemoveStreamHandler(pid)
 }
 
-func (rh * RoutedHost) GetFeatures() peer.FeatureList {
+func (rh *RoutedHost) GetFeatures() peer.Features {
 	return rh.host.GetFeatures()
 }
 
-func (rh * RoutedHost) SetFeatures(features ...peer.Feature)  {
+func (rh *RoutedHost) SetFeatures(features ...peer.Feature) {
 	rh.host.SetFeatures(features...)
 }
 

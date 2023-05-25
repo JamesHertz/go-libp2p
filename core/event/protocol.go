@@ -27,8 +27,8 @@ type EvtLocalProtocolsUpdated struct {
 
 // WARNING: this is temporarily (I think)
 type EvtLocalFeaturesUpdated struct {
-	NewFeatureList peer.FeatureList
-} 
+	NewFeatureList peer.Features
+}
 
 // TODO: think about this (should I have it)?
 // type EvtPeerFeaturesUpdated struct {

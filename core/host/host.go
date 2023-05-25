@@ -74,6 +74,6 @@ type Host interface {
 	EventBus() event.Bus
 
 	// added to support Upgradable DHT
-	GetFeatures() peer.FeatureList
-	SetFeatures(features ...peer.Feature) 
+	GetFeatures() peer.Features
+	SetFeatures(features ...peer.Feature)
 }

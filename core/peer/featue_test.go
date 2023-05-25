@@ -1,75 +1,38 @@
-package peer 
+package peer
 
 import (
 	"testing"
-
 	"github.com/stretchr/testify/require"
 )
 
 func TestScores(t *testing.T) {
+	fs := ToFeatureSet("a", "b", "c", "d")
+
+	require.Equal(t, fs.FeatureScore(Features(nil)), 0)
+
 	testCases := []struct {
-		f1    FeatureList
-		f2    FeatureList
+		fts Features
 		score int
-	}{
+	} {
 		{
-			f1:    FeatureList{"a", "b", "c"},
-			f2:    FeatureList{"a", "b", "c"},
-			score: 0b111,
+			fts: Features{"a", "b"},
+			score: 2 * FT_POINT,
 		},
 		{
-			f1:    FeatureList{"a", "b", "c"},
-			f2:    FeatureList{"a", "d", "c"},
-			score: 0b101,
+			fts: Features{"a", "b", "d"},
+			score: 3 * FT_POINT,
 		},
 		{
-			f1:    FeatureList{"a", "b", "c"},
-			f2:    FeatureList{"c", "a", "b"},
-			score: 0b000,
+			fts: Features{"z", "h", "i"},
+			score: 0,
 		},
 		{
-			f1:    FeatureList{"a", "b", "c"},
-			f2:    FeatureList{"c"},
-			score: 0b001,
-		},
-		{
-			f1:    FeatureList{"a", "b", "c"},
-			f2:    FeatureList{"b", "c"},
-			score: 0b011,
-		},
-		{
-			f1:    FeatureList{"a", "b", "c"},
-			f2:    FeatureList{"c", "b"},
-			score: 0b000,
+			fts: fs.Features(),
+			score: FT_POINT * fs.Size(),
 		},
 	}
 
-	for _, tcase := range testCases {
-		features1 := tcase.f1
-		features2 := tcase.f2
-		require.Equal(t, features2.FeaturesScore(features1), features1.FeaturesScore(features2))
-		require.Equal(t, tcase.score, features1.FeaturesScore(features2))
+	for _, test := range testCases {
+		require.Equal(t, test.score, fs.FeatureScore(test.fts))
 	}
-}
-
-func TestEmptyFL(t *testing.T) {
-	aux := FeatureList{
-		"feature-2", "feature-1", "feature-0",
-	}
-
-	e  := emptyFeatureList
-	e2 := FeatureList(nil)
-
-	require.Equal(t, e.Size(), 0)
-	require.Equal(t, e.FeaturesScore(e), 0)
-	require.Equal(t, e.FeaturesScore(aux), 0)
-	require.Equal(t, aux.FeaturesScore(e), 0)
-
-	require.Equal(t, e2.Size(), 0)
-	require.Equal(t, e2.FeaturesScore(e2), 0)
-	require.Equal(t, e2.FeaturesScore(aux), 0)
-	require.Equal(t, aux.FeaturesScore(e2), 0)
-
-	require.Equal(t, aux.Size(), len(aux))
-	require.Equal(t, aux.FeaturesScore(aux), ^(-1 << len(aux)))
 }

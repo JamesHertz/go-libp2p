@@ -32,7 +32,7 @@ type BlankHost struct {
 	eventbus event.Bus
 	emitters struct {
 		evtLocalProtocolsUpdated event.Emitter
-		evtLocalFeaturesUpdated event.Emitter
+		evtLocalFeaturesUpdated  event.Emitter
 	}
 }
 
@@ -239,19 +239,18 @@ func (bh *BlankHost) EventBus() event.Bus {
 	return bh.eventbus
 }
 
-
 // ...
-func (bh *BlankHost) GetFeatures() peer.FeatureList {
-	return bh.n.Peerstore().GetFeatures(bh.ID())
+func (bh *BlankHost) GetFeatures() peer.Features {
+	return bh.n.Peerstore().Features(bh.ID())
 }
 
-func (bh *BlankHost) SetFeatures(features ...peer.Feature){
+func (bh *BlankHost) SetFeatures(features ...peer.Feature) {
 	pstore := bh.n.Peerstore()
 	pstore.SetFeatures(bh.ID(), features...)
 
 	bh.emitters.evtLocalFeaturesUpdated.Emit(
 		event.EvtLocalFeaturesUpdated{
-			NewFeatureList: pstore.GetFeatures(bh.ID()), // TODO: think about this
+			NewFeatureList: pstore.Features(bh.ID()), // TODO: think about this
 		},
 	)
 }

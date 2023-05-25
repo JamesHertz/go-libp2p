@@ -178,6 +178,7 @@ func (ps *pstoreds) PeerInfo(p peer.ID) peer.AddrInfo {
 	return peer.AddrInfo{
 		ID:    p,
 		Addrs: ps.dsAddrBook.Addrs(p),
+		Features: ps.Features(p),
 	}
 }
 

@@ -6,22 +6,22 @@ import (
 
 var featureKey = "features"
 
-type dsFeatureBook struct {}
+type dsFeatureBook struct{}
 
-func NewFeatureBook() * dsFeatureBook {
-	return nil;
+func NewFeatureBook() *dsFeatureBook {
+	return nil
 }
 
-func (fb * dsFeatureBook) GetFeatures(pid peer.ID) peer.FeatureList {
+func (fb *dsFeatureBook) Features(pid peer.ID) peer.Features {
 	// features, err := fb.meta.Get(pid, featureKey)
-	panic("called GetFeatures of dsFeatureBook (not implemented)");
+	panic("called GetFeatures of dsFeatureBook (not implemented)")
 }
 
-func (fb * dsFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
+func (fb *dsFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
 	// features, err := fb.meta.Get(pid, featureKey)
-	panic("called SetFeatures of dsFeatureBook (not implemented)");
+	panic("called SetFeatures of dsFeatureBook (not implemented)")
 }
 
-func (fb * dsFeatureBook) HasFeature(pid peer.ID, feature peer.Feature) bool{
-	panic("called HasFeature of dsFeatureBook (not implemented)");
+func (fb *dsFeatureBook) HasFeature(pid peer.ID, feature peer.Feature) bool {
+	panic("called HasFeature of dsFeatureBook (not implemented)")
 }

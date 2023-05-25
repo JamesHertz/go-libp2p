@@ -144,7 +144,6 @@ func emitAddrChangeEvt(t *testing.T, h host.Host) {
 	}
 }
 
-
 // TestIDServiceWait gives the ID service 1s to finish after dialing
 // this is because it used to be concurrent. Now, Dial wait till the
 // id service is done.
@@ -439,24 +438,21 @@ func TestIdentifyPushWhileIdentifyingConn(t *testing.T) {
 	}
 }
 
-
 // my test :)
-func TestIdPushOnFeaturesChange(t *testing.T){
+func TestIdPushOnFeaturesChange(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	h1 := blhost.NewBlankHost(swarmt.GenSwarm(t))
 	h2 := blhost.NewBlankHost(swarmt.GenSwarm(t))
 
-
-	h1.SetFeatures(peer.FeatureList{
+	h1.SetFeatures(peer.Features{
 		"feature-1", "feature-2", "feature-3",
 	}...)
 
-	h2.SetFeatures(peer.FeatureList{
+	h2.SetFeatures(peer.Features{
 		"feature-3", "feature-0", "feature-4",
 	}...)
-
 
 	h1p := h1.ID()
 	h2p := h2.ID()
@@ -476,27 +472,27 @@ func TestIdPushOnFeaturesChange(t *testing.T){
 	require.NoError(t, h1.Connect(ctx, h2.Peerstore().PeerInfo(h2p)))
 	// check if it actually connected
 	require.NotEmpty(t, h1.Network().ConnsToPeer(h2p))
-	//wait for h2 to Identify itself 
+	//wait for h2 to Identify itself
 	ids1.IdentifyConn(h1.Network().ConnsToPeer(h2p)[0])
 
 	// ask h1 to identify itself
 	require.NotEmpty(t, h2.Network().ConnsToPeer(h1p))
 	ids2.IdentifyConn(h2.Network().ConnsToPeer(h1p)[0])
 
-	require.EqualValues(t, 
+	require.EqualValues(t,
 		h1.GetFeatures(),
-		h2.Peerstore().GetFeatures(h1p),
+		h2.Peerstore().Features(h1p),
 	)
 
-	require.EqualValues(t, 
+	require.EqualValues(t,
 		h2.GetFeatures(),
-		h1.Peerstore().GetFeatures(h2p),
+		h1.Peerstore().Features(h2p),
 	)
 
 	// sub, err := h2.EventBus().Subscribe(&event.EvtPeerFeaturesUpdated{})
 	// require.Nil(t, err)
 
-	newFtsList := peer.FeatureList{
+	newFtsList := peer.Features{
 		"feature-0", "feature-2", "feature-6",
 	}
 
@@ -514,56 +510,54 @@ func TestIdPushOnFeaturesChange(t *testing.T){
 	// 	require.Fail(t, "IDPush never received :(")
 	// }
 
-	<- time.After(2 * time.Second) // wait a bit more :)
+	<-time.After(2 * time.Second) // wait a bit more :)
 
-	require.EqualValues(t, 
+	require.EqualValues(t,
 		h1.GetFeatures(),
-		h2.Peerstore().GetFeatures(h1p),
+		h2.Peerstore().Features(h1p),
 	)
-	t.Logf("h2.peerStore: %s", h2.Peerstore().GetFeatures(h1p))
-	
-	require.Fail(t, "Just because :)")
+	t.Logf("h2.peerStore: %s", h2.Peerstore().Features(h1p))
 
 	/*
-	pid1 := h1.ID()
-	pid2 := h1.ID()
+		pid1 := h1.ID()
+		pid2 := h1.ID()
 
-	fts1 := peer.FeatureList{
-		"h1-f1", "h1-f2", "h1-f3",
-	}
+		fts1 := peer.FeatureList{
+			"h1-f1", "h1-f2", "h1-f3",
+		}
 
-	h1.SetFeatures(fts1...)
+		h1.SetFeatures(fts1...)
 
-	// wait a second
-	time.Sleep( 1 * time.Second )
-	// hello :)
-	require.EqualValues(t, 
-		h1.GetFeatures(),
-		h2.Peerstore().GetFeatures(pid1),
-	)
+		// wait a second
+		time.Sleep( 1 * time.Second )
+		// hello :)
+		require.EqualValues(t,
+			h1.GetFeatures(),
+			h2.Peerstore().GetFeatures(pid1),
+		)
 
-	require.EqualValues(t, 
-		h2.GetFeatures(),
-		h1.Peerstore().GetFeatures(pid2),
-	)
+		require.EqualValues(t,
+			h2.GetFeatures(),
+			h1.Peerstore().GetFeatures(pid2),
+		)
 
-	// require.True(t, reflect.DeepEqual(
-	// 	h2.GetFeatures(),
-	// 	h1.Peerstore().GetFeatures(pid2),
-	// ))
+		// require.True(t, reflect.DeepEqual(
+		// 	h2.GetFeatures(),
+		// 	h1.Peerstore().GetFeatures(pid2),
+		// ))
 
-	// require.True(t, reflect.DeepEqual(
-	// 	h1.GetFeatures(),
-	// 	h2.Peerstore().GetFeatures(pid1),
-	// ))
+		// require.True(t, reflect.DeepEqual(
+		// 	h1.GetFeatures(),
+		// 	h2.Peerstore().GetFeatures(pid1),
+		// ))
 
 
-	require.EqualValues(t, 
-		h1.GetFeatures(),
-		h2.Peerstore().GetFeatures(pid1),
+		require.EqualValues(t,
+			h1.GetFeatures(),
+			h2.Peerstore().GetFeatures(pid1),
 
-	)
-		*/
+		)
+	*/
 
 }
 

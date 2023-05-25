@@ -99,6 +99,7 @@ func (ps *pstoremem) PeerInfo(p peer.ID) peer.AddrInfo {
 	return peer.AddrInfo{
 		ID:    p,
 		Addrs: ps.memoryAddrBook.Addrs(p),
+		Features: ps.memoryFeatureBook.Features(p),
 	}
 }
 

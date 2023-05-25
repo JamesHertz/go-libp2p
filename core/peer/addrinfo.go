@@ -9,9 +9,9 @@ import (
 // AddrInfo is a small struct used to pass around a peer with
 // a set of addresses (and later, keys?).
 type AddrInfo struct {
-	ID    ID
-	Addrs []ma.Multiaddr
-	// Features FeatureList
+	ID       ID
+	Addrs    []ma.Multiaddr
+	Features Features // the faster way I found I solve things :)
 }
 
 var _ fmt.Stringer = AddrInfo{}
@@ -103,9 +103,9 @@ func AddrInfoToP2pAddrs(pi *AddrInfo) ([]ma.Multiaddr, error) {
 
 func (pi *AddrInfo) Loggable() map[string]interface{} {
 	return map[string]interface{}{
-		"peerID": pi.ID.Pretty(),
-		"addrs":  pi.Addrs,
-		// "features":  pi.Features
+		"peerID":   pi.ID.Pretty(),
+		"addrs":    pi.Addrs,
+		"features": pi.Features, // :3
 	}
 }
 

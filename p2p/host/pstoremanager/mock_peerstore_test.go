@@ -164,6 +164,20 @@ func (mr *MockPeerstoreMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockPeerstore)(nil).Close))
 }
 
+// Features mocks base method.
+func (m *MockPeerstore) Features(arg0 peer.ID) peer.Features {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Features", arg0)
+	ret0, _ := ret[0].(peer.Features)
+	return ret0
+}
+
+// Features indicates an expected call of Features.
+func (mr *MockPeerstoreMockRecorder) Features(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Features", reflect.TypeOf((*MockPeerstore)(nil).Features), arg0)
+}
+
 // FirstSupportedProtocol mocks base method.
 func (m *MockPeerstore) FirstSupportedProtocol(arg0 peer.ID, arg1 ...protocol.ID) (protocol.ID, error) {
 	m.ctrl.T.Helper()
@@ -197,20 +211,6 @@ func (m *MockPeerstore) Get(arg0 peer.ID, arg1 string) (interface{}, error) {
 func (mr *MockPeerstoreMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPeerstore)(nil).Get), arg0, arg1)
-}
-
-// GetFeatures mocks base method.
-func (m *MockPeerstore) GetFeatures(arg0 peer.ID) peer.FeatureList {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFeatures", arg0)
-	ret0, _ := ret[0].(peer.FeatureList)
-	return ret0
-}
-
-// GetFeatures indicates an expected call of GetFeatures.
-func (mr *MockPeerstoreMockRecorder) GetFeatures(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeatures", reflect.TypeOf((*MockPeerstore)(nil).GetFeatures), arg0)
 }
 
 // GetProtocols mocks base method.

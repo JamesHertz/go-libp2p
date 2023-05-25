@@ -251,16 +251,15 @@ type ProtoBook interface {
 	RemovePeer(peer.ID)
 }
 
-
 // used to keep track of the features of each peer
 type FeatureBook interface {
 	// set the feature list
-    SetFeatures(peer.ID, ...peer.Feature) // TODO: should I change the DEFINITION OF THIS?
-    // RemoveFeature(peer.ID, ...peer.Feature) // -> TODO think about this later ... 
+	SetFeatures(peer.ID, ...peer.Feature) // TODO: should I change the DEFINITION OF THIS?
+	// RemoveFeature(peer.ID, ...peer.Feature) // -> TODO think about this later ...
 	// Get peer features list or nil
-    GetFeatures(peer.ID) peer.FeatureList
+	Features(peer.ID) peer.Features
 	// checks if a peer has features
 	HasFeature(peer.ID, peer.Feature) bool
-	// removes the peer from the book 
-    RemovePeer(peer.ID)
+	// removes the peer from the book
+	RemovePeer(peer.ID)
 }

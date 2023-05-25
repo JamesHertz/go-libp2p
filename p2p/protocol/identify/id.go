@@ -60,7 +60,7 @@ type identifySnapshot struct {
 	protocols []protocol.ID
 	addrs     []ma.Multiaddr
 	record    *record.Envelope
-	features  peer.FeatureList
+	features  peer.Features
 }
 
 type IDService interface {
@@ -255,7 +255,7 @@ func (ids *idService) loop(ctx context.Context) {
 	for {
 		select {
 		//notes: ok -> is false if the channel was closed else true
-		case e, ok := <-sub.Out(): 
+		case e, ok := <-sub.Out():
 			if !ok {
 				return
 			}
@@ -432,7 +432,7 @@ func (ids *idService) sendIdentifyResp(s network.Stream, isPush bool) error {
 	log.Debugw("sending snapshot", "seq", snapshot.seq, "protocols", snapshot.protocols, "addrs", snapshot.addrs)
 
 	mes := ids.createBaseIdentifyResponse(s.Conn(), &snapshot) // TODO: over here
-	mes.SignedPeerRecord = ids.getSignedRecord(&snapshot) // TODO: as well
+	mes.SignedPeerRecord = ids.getSignedRecord(&snapshot)      // TODO: as well
 
 	log.Debugf("%s sending message to %s %s", ID, s.Conn().RemotePeer(), s.Conn().RemoteMultiaddr())
 	if err := ids.writeChunkedIdentifyMsg(s, mes); err != nil {
@@ -536,7 +536,7 @@ func (ids *idService) updateSnapshot() {
 	snapshot := identifySnapshot{
 		addrs:     ids.Host.Addrs(),
 		protocols: ids.Host.Mux().Protocols(),
-		features: ids.Host.GetFeatures(),
+		features:  ids.Host.GetFeatures(),
 	}
 	if !ids.disableSignedPeerRecord {
 		if cab, ok := peerstore.GetCertifiedAddrBook(ids.Host.Peerstore()); ok {
@@ -582,7 +582,7 @@ func (ids *idService) createBaseIdentifyResponse(conn network.Conn, snapshot *id
 	mes.ObservedAddr = remoteAddr.Bytes()
 
 	// peer features :)
-	mes.Features = snapshot.features.StringArray()
+	mes.Features = snapshot.features.ToStrArray()
 
 	// populate unsigned addresses.
 	// peers that do not yet support signed addresses will need this.
@@ -673,7 +673,7 @@ func (ids *idService) consumeMessage(mes *pb.Identify, c network.Conn, isPush bo
 	supported, _ := ids.Host.Peerstore().GetProtocols(p)
 	mesProtocols := protocol.ConvertFromStrings(mes.Protocols)
 	added, removed := diff(supported, mesProtocols)
-	pfeatures := peer.StringToFeatureList( mes.GetFeatures() )
+	pfeatures := peer.ToFeatures(mes.GetFeatures())
 	ids.Host.Peerstore().SetProtocols(p, mesProtocols...)
 	if isPush {
 		ids.emitters.evtPeerProtocolsUpdated.Emit(event.EvtPeerProtocolsUpdated{
@@ -758,7 +758,6 @@ func (ids *idService) consumeMessage(mes *pb.Identify, c network.Conn, isPush bo
 
 	ids.Host.Peerstore().Put(p, "ProtocolVersion", pv)
 	ids.Host.Peerstore().Put(p, "AgentVersion", av)
-
 
 	// stores the peer features :)
 	ids.Host.Peerstore().SetFeatures(p, pfeatures...)
