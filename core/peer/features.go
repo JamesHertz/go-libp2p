@@ -1,6 +1,9 @@
 package peer
 
-import "unsafe"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type Feature string
 type Features []Feature
@@ -68,10 +71,12 @@ func (fs FeatureSet) FeatureScore(fts Features) int {
 }
 
 func (fs FeatureSet) Features() Features {
-	res := make(Features, len(fs.fts))
+	fmt.Println("-> getting features")
+	res := make(Features, 0, len(fs.fts))
 	for ft := range fs.fts {
 		res = append(res, ft)
 	}
+	fmt.Println("getting features <-")
 	return res
 }
 

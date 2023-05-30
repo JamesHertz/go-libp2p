@@ -1,12 +1,16 @@
 package peer
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
 func TestScores(t *testing.T) {
+	aux := NewFeatureSet();
+	fmt.Println("aux.Features():", aux.Features())
+
 	fs := NewFeatureSet("a", "b", "c", "d")
 
 	require.Equal(t, fs.FeatureScore(Features(nil)), 0)
