@@ -479,15 +479,15 @@ func TestIdPushOnFeaturesChange(t *testing.T) {
 	require.NotEmpty(t, h2.Network().ConnsToPeer(h1p))
 	ids2.IdentifyConn(h2.Network().ConnsToPeer(h1p)[0])
 
-	require.EqualValues(t,
+	require.True(t, peer.SameFeatures(
 		h1.GetFeatures(),
 		h2.Peerstore().Features(h1p),
-	)
+	))
 
-	require.EqualValues(t,
+	require.True(t, peer.SameFeatures(
 		h2.GetFeatures(),
 		h1.Peerstore().Features(h2p),
-	)
+	))
 
 	// sub, err := h2.EventBus().Subscribe(&event.EvtPeerFeaturesUpdated{})
 	// require.Nil(t, err)
@@ -498,24 +498,12 @@ func TestIdPushOnFeaturesChange(t *testing.T) {
 
 	h1.SetFeatures(newFtsList...)
 
-	// select {
-	// case res, ok := <- sub.Out():
-	// 	if !ok {
-	// 		require.Fail(t, "sub, channel was closed. What??")
-	// 	}
-	// 	info, _ := res.(event.EvtPeerFeaturesUpdated)
-	// 	require.Equal(t, info.Peer, h1.ID())
-	// 	require.EqualValues(t, info.NewFeatureList, newFtsList)
-	// case <- time.After(5 * time.Second):
-	// 	require.Fail(t, "IDPush never received :(")
-	// }
-
 	<-time.After(2 * time.Second) // wait a bit more :)
 
-	require.EqualValues(t,
+	require.True(t, peer.SameFeatures(
 		h1.GetFeatures(),
 		h2.Peerstore().Features(h1p),
-	)
+	))
 	t.Logf("h2.peerStore: %s", h2.Peerstore().Features(h1p))
 
 	/*
@@ -531,7 +519,7 @@ func TestIdPushOnFeaturesChange(t *testing.T) {
 		// wait a second
 		time.Sleep( 1 * time.Second )
 		// hello :)
-		require.EqualValues(t,
+		require.True(t, peer.SameFeatures(
 			h1.GetFeatures(),
 			h2.Peerstore().GetFeatures(pid1),
 		)

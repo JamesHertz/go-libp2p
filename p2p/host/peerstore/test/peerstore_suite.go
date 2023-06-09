@@ -417,25 +417,8 @@ func testFeatureBook(ps pstore.Peerstore) func(*testing.T) {
 			"feature-3",
 		}
 
-		equals := func(f1 peer.Features, f2 peer.Features) bool {
-			if f1.Size() != f2.Size() {
-				return false
-			}
-			helper := make(map[peer.Feature]struct{}, f1.Size())
-			for _, f := range f1 {
-				helper[f] = struct{}{}
-			}
-			for _, f := range f2 {
-				_, ok := helper[f]
-				if !ok {
-					return false
-				}
-			}
-			return true
-		}
-
 		hasFeatures := func(pid peer.ID, fts peer.Features) bool {
-			res1 := equals(ps.Features(pid), fts)
+			res1 := peer.SameFeatures(ps.Features(pid), fts)
 			res2 := ps.HasFeatures(pid, fts...)
 			require.Equal(t, res1, res2)
 			return res1

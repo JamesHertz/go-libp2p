@@ -82,3 +82,21 @@ func (fs BasicFeatureSet) Size() int {
 func (fs BasicFeatureSet) MaxFeatureScore() int {
 	return len(fs.fts) * FT_POINT
 }
+
+// it's here only for testint reasons
+func SameFeatures(f1 Features, f2 Features) bool {
+	if f1.Size() != f2.Size() {
+		return false
+	}
+	helper := make(map[Feature]struct{}, f1.Size())
+	for _, f := range f1 {
+		helper[f] = struct{}{}
+	}
+	for _, f := range f2 {
+		_, ok := helper[f]
+		if !ok {
+			return false
+		}
+	}
+	return true
+}
