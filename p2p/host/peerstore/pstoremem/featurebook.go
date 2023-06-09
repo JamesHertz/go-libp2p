@@ -50,7 +50,7 @@ func (fb *memoryFeatureBook) HasFeatures(pid peer.ID, feature ...peer.Feature) b
 	fb.lock.RLock()
 	defer fb.lock.RUnlock()
 	fs, ok := fb.store[pid]
-	return !ok && fs.HasFeatures(feature...)
+	return ok && fs.HasFeatures(feature...)
 }
 
 func (fb *memoryFeatureBook) RemovePeer(pid peer.ID) {

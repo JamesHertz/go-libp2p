@@ -30,7 +30,6 @@ func (fs BasicFeatureSet) HasFeatures(fts ...Feature) bool {
 		if !ok {
 			return false;
 		}
-
 	}
 	return true
 }
@@ -49,8 +48,11 @@ func (fs BasicFeatureSet) FeatureScore(fts Features) int {
 	return score
 }
 
-
 func (fs BasicFeatureSet) SetFeatures(fts ...Feature){
+	if len(fts) == fs.Size() && fs.HasFeatures(fts...){
+		return // nothing changed so don't do nothing :)
+	}
+
 	for f := range fs.fts {
 		delete(fs.fts, f)
 	}

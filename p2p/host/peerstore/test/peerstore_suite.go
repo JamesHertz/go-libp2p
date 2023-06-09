@@ -416,12 +416,35 @@ func testFeatureBook(ps pstore.Peerstore) func(*testing.T) {
 			"feature-2",
 			"feature-3",
 		}
+
+		equals := func(f1 peer.Features, f2 peer.Features) bool {
+			if f1.Size() != f2.Size() {
+				return false
+			}
+			helper := make(map[peer.Feature]struct{}, f1.Size())
+			for _, f := range f1 {
+				helper[f] = struct{}{}
+			}
+			for _, f := range f2 {
+				_, ok := helper[f]
+				if !ok {
+					return false
+				}
+			}
+			return true
+		}
+
+		hasFeatures := func(pid peer.ID, fts peer.Features) bool {
+			res1 := equals(ps.Features(pid), fts)
+			res2 := ps.HasFeatures(pid, fts...)
+			require.Equal(t, res1, res2)
+			return res1
+		}
+
 		t.Run("Get and Set", func(t *testing.T) {
 			require.Equal(t, peer.Features(nil), ps.Features(pid))
 			ps.SetFeatures(pid, fts...)
-			require.True(t, reflect.DeepEqual(
-				fts, ps.Features(pid),
-			))
+			require.True(t, hasFeatures(pid, fts))
 		})
 
 		t.Run("Get and Set safety", func(t *testing.T) {
@@ -431,13 +454,19 @@ func testFeatureBook(ps pstore.Peerstore) func(*testing.T) {
 			))
 			aux := ps.Features(pid)
 			require.NotNil(t, aux)
+			require.True(t, hasFeatures(pid, aux))
+			/*
 			require.True(t, reflect.DeepEqual(
 				ps.Features(pid), aux,
 			))
-			aux[0] = "I am a supper mem"
+			*/
+			aux[0] = "I am a super mem"
+			require.False(t, hasFeatures(pid, aux))
+			/*
 			require.False(t, reflect.DeepEqual(
 				ps.Features(pid), aux,
 			))
+			*/
 		})
 
 		t.Run("Resetting", func(t *testing.T) {
@@ -449,12 +478,18 @@ func testFeatureBook(ps pstore.Peerstore) func(*testing.T) {
 				"new-feature-3",
 			}
 			ps.SetFeatures(pid, newFeatures...)
+			require.False(t, hasFeatures(pid, aux))
+			/*
 			require.False(t, reflect.DeepEqual(
 				aux, ps.Features(pid),
 			))
+			*/
+			require.True(t, hasFeatures(pid, newFeatures))
+			/*
 			require.True(t, reflect.DeepEqual(
 				newFeatures, ps.Features(pid),
 			))
+			*/
 		})
 	}
 }
