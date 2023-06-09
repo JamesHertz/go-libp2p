@@ -2,10 +2,12 @@ package pstoreds
 
 import (
 	"github.com/libp2p/go-libp2p/core/peer"
+	ps "github.com/libp2p/go-libp2p/core/peerstore"
 )
 
-var featureKey = "features"
+// var featureKey = "features"
 
+var _ ps.FeatureBook = (*dsFeatureBook)(nil)
 type dsFeatureBook struct{}
 
 func NewFeatureBook() *dsFeatureBook {
@@ -22,6 +24,10 @@ func (fb *dsFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
 	panic("called SetFeatures of dsFeatureBook (not implemented)")
 }
 
-func (fb *dsFeatureBook) HasFeature(pid peer.ID, feature peer.Feature) bool {
+func (fb *dsFeatureBook) HasFeatures(pid peer.ID, feature... peer.Feature) bool {
 	panic("called HasFeature of dsFeatureBook (not implemented)")
+}
+
+func (fb *dsFeatureBook) RemovePeer(pid peer.ID) {
+	panic("called RemovePeer of dsFeatureBook (not implemented)")
 }

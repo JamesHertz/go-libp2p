@@ -259,7 +259,7 @@ type FeatureBook interface {
 	// Get peer features list or nil
 	Features(peer.ID) peer.Features
 	// checks if a peer has features
-	HasFeature(peer.ID, peer.Feature) bool
+	HasFeatures(peer.ID, ...peer.Feature) bool
 	// removes the peer from the book
 	RemovePeer(peer.ID)
 }

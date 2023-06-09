@@ -4,57 +4,53 @@ import (
 	"sync"
 
 	"github.com/libp2p/go-libp2p/core/peer"
+	ps "github.com/libp2p/go-libp2p/core/peerstore"
 )
 
+var _ ps.FeatureBook = (*memoryFeatureBook)(nil)
+
+
 type memoryFeatureBook struct {
-	store map[peer.ID]peer.Features
+	store map[peer.ID]peer.FeatureSet
 	lock  sync.RWMutex
 }
 
 func NewFeatureBook() *memoryFeatureBook {
 	return &memoryFeatureBook{
-		store: make(map[peer.ID]peer.Features),
+		store: make(map[peer.ID]peer.FeatureSet),
 		lock:  sync.RWMutex{},
 	}
 }
 
 func (fb *memoryFeatureBook) SetFeatures(pid peer.ID, features ...peer.Feature) {
 	fb.lock.Lock()
-	aux := make(peer.Features, len(features))
-	copy(aux, features)
-	fb.store[pid] = aux
-	fb.lock.Unlock()
+	defer fb.lock.Unlock()
+	fs, ok := fb.store[pid]
+	if !ok {
+		fb.store[pid] = peer.NewFeatureSet(features...)
+	} else {
+		fs.SetFeatures(features...)
+	}
 }
 
 func (fb *memoryFeatureBook) Features(pid peer.ID) peer.Features {
 	fb.lock.RLock()
 	defer fb.lock.RUnlock()
-	features, ok := fb.store[pid]
+
+	fs, ok := fb.store[pid]
 
 	if !ok {
 		return nil
 	}
 
-	res := make(peer.Features, features.Size())
-	copy(res, features)
-	return res
+	return fs.Features()
 }
 
-func (fb *memoryFeatureBook) HasFeature(pid peer.ID, feature peer.Feature) bool {
+func (fb *memoryFeatureBook) HasFeatures(pid peer.ID, feature ...peer.Feature) bool {
 	fb.lock.RLock()
 	defer fb.lock.RUnlock()
-	features, ok := fb.store[pid]
-	if !ok {
-		return false
-	}
-
-	for _, ft := range features {
-		if ft == feature {
-			return true
-		}
-	}
-
-	return false
+	fs, ok := fb.store[pid]
+	return !ok && fs.HasFeatures(feature...)
 }
 
 func (fb *memoryFeatureBook) RemovePeer(pid peer.ID) {
@@ -62,12 +58,3 @@ func (fb *memoryFeatureBook) RemovePeer(pid peer.ID) {
 	delete(fb.store, pid)
 	fb.lock.Unlock()
 }
-
-// func (fb * memoryFeatureBook) RemoveFeature(pid peer.ID, features ...peer.Feature){
-// 	fb.lock.Lock()
-// 	defer fb.lock.Unlock()
-// 	pfeatures, ok := fb.store[pid]
-// 	if ok {
-// 		//newfl := make(peer.FeatureList, 0, pfeatures.Size())
-// 	}
-// }

@@ -37,3 +37,25 @@ func TestScores(t *testing.T) {
 		require.Equal(t, test.score, fs.FeatureScore(test.fts))
 	}
 }
+
+
+func TestFeaturesSet(t * testing.T){
+
+	fts := Features{ "a", "b", "c", "d"}
+	fs := NewFeatureSet(fts...)
+
+	require.EqualValues(t, fs.Features(), fts)
+
+	for _, ft := range fts {
+		require.True(t, fs.HasFeatures(ft))
+	}
+
+	ftsII := Features{ "d", "e", "f"}
+
+	fs.SetFeatures(ftsII...)
+	require.EqualValues(t, fs.Features(), ftsII)
+
+	for _, ft := range ftsII {
+		require.True(t, fs.HasFeatures(ft))
+	}
+}

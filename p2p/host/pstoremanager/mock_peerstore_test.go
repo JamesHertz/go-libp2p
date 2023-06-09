@@ -228,18 +228,23 @@ func (mr *MockPeerstoreMockRecorder) GetProtocols(arg0 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProtocols", reflect.TypeOf((*MockPeerstore)(nil).GetProtocols), arg0)
 }
 
-// HasFeature mocks base method.
-func (m *MockPeerstore) HasFeature(arg0 peer.ID, arg1 peer.Feature) bool {
+// HasFeatures mocks base method.
+func (m *MockPeerstore) HasFeatures(arg0 peer.ID, arg1 ...peer.Feature) bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HasFeature", arg0, arg1)
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HasFeatures", varargs...)
 	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
-// HasFeature indicates an expected call of HasFeature.
-func (mr *MockPeerstoreMockRecorder) HasFeature(arg0, arg1 interface{}) *gomock.Call {
+// HasFeatures indicates an expected call of HasFeatures.
+func (mr *MockPeerstoreMockRecorder) HasFeatures(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasFeature", reflect.TypeOf((*MockPeerstore)(nil).HasFeature), arg0, arg1)
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasFeatures", reflect.TypeOf((*MockPeerstore)(nil).HasFeatures), varargs...)
 }
 
 // LatencyEWMA mocks base method.
