@@ -1,15 +1,11 @@
 package peer
 
-type FeatureScorer interface {
-	FeatureScore(ft Features) int
-	HasFeatures(...Feature) bool
-}
-
 type FeatureSet interface {
-	FeatureScorer
 	Features() Features
 	SetFeatures(... Feature)
+	HasFeatures(...Feature) bool
 	Size() int
+	FeatureScore(ft Features) int
 }
 
 
