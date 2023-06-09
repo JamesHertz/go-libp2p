@@ -9,13 +9,18 @@ type Features []Feature
 
 var emptyFeatureList Features = nil
 
-func (list Features) HasFeature(feature Feature) bool {
-	for _, ft := range list {
-		if ft == feature {
-			return true
+func (list Features) HasFeatures(fts ...Feature) bool {
+	for _, ft := range fts {
+outter:
+		for i, aux := range list {
+			if aux == ft {
+				break outter
+			} else if i == len(list) - 1 { // last index :)
+				return false
+			}
 		}
 	}
-	return false
+	return true
 }
 
 func (list Features) Size() int {

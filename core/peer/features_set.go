@@ -4,8 +4,9 @@ type FeatureSet interface {
 	Features() Features
 	SetFeatures(... Feature)
 	HasFeatures(...Feature) bool
-	Size() int
 	FeatureScore(ft Features) int
+	MaxFeatureScore() int
+	Size() int
 }
 
 
@@ -75,4 +76,9 @@ func (fs BasicFeatureSet) Features() Features {
 
 func (fs BasicFeatureSet) Size() int {
 	return len(fs.fts)
+}
+
+// ultimate need :)
+func (fs BasicFeatureSet) MaxFeatureScore() int {
+	return len(fs.fts) * FT_POINT
 }

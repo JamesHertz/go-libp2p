@@ -38,24 +38,40 @@ func TestScores(t *testing.T) {
 	}
 }
 
+func TestFeaturesSet(t *testing.T) {
 
-func TestFeaturesSet(t * testing.T){
-
-	fts := Features{ "a", "b", "c", "d"}
+	fts := Features{"a", "b", "c", "d"}
 	fs := NewFeatureSet(fts...)
 
-	require.EqualValues(t, fs.Features(), fts)
+	require.True(t, equals(fs.Features(), fts))
 
 	for _, ft := range fts {
 		require.True(t, fs.HasFeatures(ft))
 	}
 
-	ftsII := Features{ "d", "e", "f"}
+	ftsII := Features{"d", "e", "f"}
 
 	fs.SetFeatures(ftsII...)
-	require.EqualValues(t, fs.Features(), ftsII)
+	require.True(t, equals(fs.Features(), ftsII))
 
-	for _, ft := range ftsII {
-		require.True(t, fs.HasFeatures(ft))
+	require.True(t, fs.HasFeatures(ftsII...))
+	require.True(t, fs.Features().HasFeatures(ftsII...))
+}
+
+// TODO: deduplicate this (also used in peerstore_suit.go)
+func equals(f1 Features, f2 Features) bool {
+	if f1.Size() != f2.Size() {
+		return false
 	}
+	helper := make(map[Feature]struct{}, f1.Size())
+	for _, f := range f1 {
+		helper[f] = struct{}{}
+	}
+	for _, f := range f2 {
+		_, ok := helper[f]
+		if !ok {
+			return false
+		}
+	}
+	return true
 }
